@@ -843,24 +843,54 @@ document.addEventListener("DOMContentLoaded", function () {
     };
 
     function scrambleRandomText() {
-      const randomIndex = Math.floor(
-        Math.random() * backgroundTextItems.length
-      );
-      const randomItem = backgroundTextItems[randomIndex];
-      const originalText = randomItem.dataset.text;
-
-      gsap.to(randomItem, {
-        duration: 1,
-        scrambleText: {
-          text: originalText,
-          chars: "■▪▌▐▬",
-          revealDelay: 0.5,
-          speed: 0.3
-        },
-        ease: "none"
+      // Select 4-8 random text items
+      const numItems = 4 + Math.floor(Math.random() * 5); // 4 to 8 items
+      const selectedItems = [];
+      
+      for (let i = 0; i < numItems; i++) {
+        const randomIndex = Math.floor(Math.random() * backgroundTextItems.length);
+        const randomItem = backgroundTextItems[randomIndex];
+        if (!selectedItems.includes(randomItem)) {
+          selectedItems.push(randomItem);
+        }
+      }
+      
+      selectedItems.forEach((randomItem) => {
+        const originalText = randomItem.dataset.text;
+        const scrambleChars = "■▪▌▐▬██▓▒░░▒▓█";
+        
+        // Make scramble more visible with flash effect
+        gsap.to(randomItem, {
+          scale: 1.1,
+          duration: 0.1,
+          yoyo: true,
+          repeat: 1
+        });
+        
+        let iteration = 0;
+        const scrambleDuration = 15; // More scramble cycles
+        
+        const scrambleInterval = setInterval(() => {
+          randomItem.textContent = originalText
+            .split("")
+            .map((letter, index) => {
+              if (index < iteration) {
+                return originalText[index];
+              }
+              return scrambleChars[Math.floor(Math.random() * scrambleChars.length)];
+            })
+            .join("");
+          
+          iteration += 0.5; // Slower reveal for more scramble visibility
+          
+          if (iteration > originalText.length + 5) {
+            clearInterval(scrambleInterval);
+            randomItem.textContent = originalText;
+          }
+        }, 80); // Slightly slower for better visibility
       });
 
-      const delay = 0.5 + Math.random() * 2;
+      const delay = 0.5 + Math.random() * 1; // Even more frequent
       setTimeout(scrambleRandomText, delay * 1000);
     }
 
