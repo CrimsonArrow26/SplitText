@@ -2,7 +2,7 @@
 // TODO: Interactive area was removed due to issues with the middle title element and overall elements overlaping and causing sequence cancellation
 // TODO: Fix issue where the text is not returning to initial position when quickly hovering
 
-gsap.registerPlugin(CustomEase, SplitText, ScrambleTextPlugin);
+gsap.registerPlugin(CustomEase);
 
 document.addEventListener("DOMContentLoaded", function () {
   CustomEase.create("customEase", "0.86, 0, 0.07, 1");
@@ -201,12 +201,9 @@ document.addEventListener("DOMContentLoaded", function () {
       const text = textElement.dataset.text;
       const rowId = row.dataset.rowId;
 
-      splitTexts[rowId] = new SplitText(textElement, {
-        type: "chars",
-        charsClass: "char",
-        mask: true,
-        reduceWhiteSpace: false,
-        propIndex: true
+      splitTexts[rowId] = new SplitType(textElement, {
+        types: "chars",
+        charClass: "char"
       });
 
       textElement.style.visibility = "visible";
@@ -873,9 +870,9 @@ document.addEventListener("DOMContentLoaded", function () {
       '.text-item[data-text="IS THE KEY"]'
     );
     if (simplicity) {
-      const splitSimplicity = new SplitText(simplicity, {
-        type: "chars",
-        charsClass: "simplicity-char"
+      const splitSimplicity = new SplitType(simplicity, {
+        types: "chars",
+        charClass: "simplicity-char"
       });
 
       gsap.from(splitSimplicity.chars, {
